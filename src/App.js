@@ -1,50 +1,45 @@
-import React, { Component } from "react";
-import GenerateCrossword from "./GenerateCrossword";
-import { render } from "react-dom";
+import React, { useRef, useState } from "react";
 
-class App extends Component {
-  constructor() {
-    super();
-    this.state = {
-      givenWord: "",
-    };
-    this.handleInput = this.handleInput.bind(this);
-    this.handleSubmit = this.handleInput.bind(this);
-  }
+function App() {
 
-  handleInput(event) {
-    this.setState({givenWord: event.target.value})
-    console.log(event.target.value)
-  }
+  const [newWord, setNewWord] = useState([]);
+  const input = useRef();
 
-  handleSubmit(event) {
-    console.log(this.state);
-    event.preventDefault();
-  }
-
-  render() {
-    return (
-      <>
-      <div className="App">
-        <h1>Crossword Generator v0</h1>
-      </div>
-      <div className="container">
-        <div id="crossword-generate-elements">
-        <textarea rows='10' onChange={this.handleInput} value={this.state.givenWord} />
-        </div>
-        <button type="submit" onClick={GenerateCrossword} onSubmit={this.handleSubmit}>Generate Crossword</button>
-      </div>
+  function addToList(e) {
+    e.preventDefault();
+    setNewWord([...newWord, input.current.value]);
+    console.log(input.current.value);
+  };
   
-      <div className="container">
-        <div id="crossword">
-  
-        </div>
+  return (
+    <>
+    <div className="App">
+      <h1>Crossword Generator v0</h1>
+    </div>
+    <div className="container">
+      <div id="crossword-generate-elements">
+      <input type="text" ref={input}></input>
+      <button type="submit" onClick={addToList}>Add Word</button>
       </div>
-      </>
-    );
-  }
+    </div>
+    <h2>Words</h2>
+
+    <ul>
+    {newWord.map(function(object, i){
+      return <li key={i}>{object}</li>
+      })}
+    </ul>
+
+    <div id="generate">
+    <button type="submit" >Generate Crossword</button>
+    </div>
+    <div className="container">
+      <div id="crossword">
+
+      </div>
+    </div>
+    </>
+  );
 }
-
-render(<App/>, document.getElementById('root'));
 
 export default App;
