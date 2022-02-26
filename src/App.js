@@ -1,3 +1,5 @@
+import generateCrossword from "./GenerateCrossword";
+
 function App() {
   return (
     <>
@@ -8,7 +10,13 @@ function App() {
       <div id="crossword-generate-elements">
       <textarea rows='10'></textarea>
       </div>
-      <button type="submit">Generate Crossword</button>
+      <button type="submit" onClick={generateCrossword}>Generate Crossword</button>
+    </div>
+
+    <div class="container">
+      <div id="crossword">
+        
+      </div>
     </div>
     </>
   );
