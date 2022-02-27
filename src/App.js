@@ -163,7 +163,7 @@ function App() {
     return score;
   }
 
-  function placeWord(word, x, y, vertical, grid) {
+  function placeWord(word="", x, y, vertical, grid) {
     var wordPlaced = false;
     if (vertical) {
       if (word.length + x < grid.length) {
@@ -215,7 +215,7 @@ function App() {
     var bestScoreIndex = 0;
     var topScore = 0;
     var fitScore = 0;
-    placeWord(wordList, 0, 0, false, crosswordGrid);
+    placeWord(wordList[seed], 0, 0, false, crosswordGrid);
     for (var iy = 0; iy < 2; iy++) {
       for (var ix = 0; ix < wordList.length; ix++) {
         if (!isActiveWord(wordList[ix])) {
@@ -255,6 +255,7 @@ function App() {
     var grid = operateCrossword();
     for (var x = 0; x < grid.length; x++) {
       for (var y = 0; y < grid.length; y++) {
+        console.log(grid[x][y])
         rowStr += "<td>" + grid[x][y].targetChar + "</td>";
         htmlString += rowStr;
       }
