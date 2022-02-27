@@ -11,7 +11,9 @@ function App() {
     console.log(input.current.value);
   };
 
-  const activeWordList = newWord;
+  const oldActiveWordList = newWord;
+  const wordList = oldActiveWordList.sort((a, b) => a.length - b.length);
+  var activeWordList = [];
 
   var acrossCount = 0;
   var downCount = 0;
@@ -33,6 +35,7 @@ function App() {
         grid[x][y].value = '-';
       }
     }
+    return grid;
   };
 
   function generateCrossword(wordList) {
@@ -41,6 +44,7 @@ function App() {
         gridSize += wordList[i].length;
     }
     console.log(gridSize);
+    return gridSize;
   };
 
   function suggestCoordinates(word, gridSize, grid) {
@@ -72,6 +76,7 @@ function App() {
         }
       }
     }
+    return coordinateList;
   }
 
   function checkScore(word, x, y, vertical, grid) {
@@ -202,7 +207,46 @@ function App() {
         }
     }
   }
-  
+
+  function operateCrossword(seed=0) {
+    var gridDimensions = generateCrossword(activeWordList);
+    var crosswordGrid = board(gridDimensions, gridDimensions);
+    var bestScoreIndex = 0;
+    var topScore = 0;
+    var fitScore = 0;
+    var startTime = 0;
+    placeWord(wordList, 0, 0, false, crosswordGrid);
+    for (var iy = 0; iy < 2; iy++) {
+      for (var ix = 0; ix < wordList.length; ix++) {
+        if (!isActiveWord(wordList[ix])) {
+            topScore = 0;
+            bestScoreIndex = 0;
+
+            var coordinateList = suggestCoordinates(wordList[ix]);
+            if (coordinateList[0]) {
+              for (var c = 0; c < coordinateList.length; c++) {
+                fitScore = checkScore(wordList[ix], coordinateList[c].x, coordinateList[c].y, coordinateList[c].vertical);
+                if (fitScore > topScore) {
+                  topScore = fitScore;
+                  bestScoreIndex = c;
+                }
+              }
+            }
+            if (topScore > 1) {
+              placeWord(wordList[ix], coordinateList[bestScoreIndex].x, coordinateList[bestScoreIndex].y, coordinateList[bestScoreIndex].vertical);
+            }
+
+        }
+
+      } 
+    }
+    if (activeWordList.length < wordList.length / 2) {
+      seed++;
+      generateCrossword(seed);
+    }
+
+  }
+
   return (
     <>
     <div className="App">
