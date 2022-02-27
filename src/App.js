@@ -1,3 +1,4 @@
+import { render } from "@testing-library/react";
 import React, { useRef, useState } from "react";
 
 function App() {
@@ -183,7 +184,7 @@ function App() {
     if (wordPlaced) {
       var currentindex = newWord.length;
       activeWordList[currentindex] = {}
-      activeWordList[currentindex].word  = word;
+      activeWordList[currentindex]  = word;
       activeWordList[currentindex].x = x;
       activeWordList[currentindex].y = y;
       activeWordList[currentindex].vertical = vertical;
@@ -201,7 +202,7 @@ function App() {
   function isActiveWord(word) {
     if (activeWordList.length > 0) {
         for (var i = 0; i < activeWordList.length; i++) {
-          if (word == activeWordList[i].word) {
+          if (word == activeWordList[i]) {
             return true;
           }
         }
@@ -249,15 +250,30 @@ function App() {
   }
 
   function renderCrossword() {
+    var htmlString = ""
     var rowStr = "";
     var grid = operateCrossword();
     for (var x = 0; x < grid.length; x++) {
       for (var y = 0; y < grid.length; y++) {
         rowStr += "<td>" + grid[x][y].targetChar + "</td>";
+        htmlString += rowStr;
       }
     }
     console.log('across ' + acrossCount);
     console.log('down ' + downCount);
+    console.log(htmlString)
+    return (
+      // <div dangerouslySetInnerHTML={{__html: htmlString}}></div>
+      htmlString
+    );
+  }
+
+  class Crossword extends React.Component {
+    render() {
+      return (
+        <div dangerouslySetInnerHTML={{__html: renderCrossword()}}></div>
+      );
+    }
   }
 
   return (
@@ -284,7 +300,7 @@ function App() {
     </div>
     <div className="container">
       <div id="crossword">
-        
+        <Crossword />
       </div>
     </div>
     </>
