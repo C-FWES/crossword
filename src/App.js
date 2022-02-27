@@ -19,8 +19,8 @@ function App() {
   var downCount = 0;
 
   function board(columns, rows) {
-    this.columns = columns;
-    this.rows = rows;
+    // this.columns = columns;
+    // this.rows = rows;
   
     var grid = new Array(columns);
     for (var i = 0; i < columns; i++) {
@@ -209,12 +209,11 @@ function App() {
   }
 
   function operateCrossword(seed=0) {
-    var gridDimensions = generateCrossword(activeWordList);
+    var gridDimensions = generateCrossword(wordList);
     var crosswordGrid = board(gridDimensions, gridDimensions);
     var bestScoreIndex = 0;
     var topScore = 0;
     var fitScore = 0;
-    var startTime = 0;
     placeWord(wordList, 0, 0, false, crosswordGrid);
     for (var iy = 0; iy < 2; iy++) {
       for (var ix = 0; ix < wordList.length; ix++) {
@@ -225,7 +224,7 @@ function App() {
             var coordinateList = suggestCoordinates(wordList[ix]);
             if (coordinateList[0]) {
               for (var c = 0; c < coordinateList.length; c++) {
-                fitScore = checkScore(wordList[ix], coordinateList[c].x, coordinateList[c].y, coordinateList[c].vertical);
+                fitScore = checkScore(wordList[ix], coordinateList[c].x, coordinateList[c].y, coordinateList[c].vertical, crosswordGrid);
                 if (fitScore > topScore) {
                   topScore = fitScore;
                   bestScoreIndex = c;
@@ -233,7 +232,7 @@ function App() {
               }
             }
             if (topScore > 1) {
-              placeWord(wordList[ix], coordinateList[bestScoreIndex].x, coordinateList[bestScoreIndex].y, coordinateList[bestScoreIndex].vertical);
+              placeWord(wordList[ix], coordinateList[bestScoreIndex].x, coordinateList[bestScoreIndex].y, coordinateList[bestScoreIndex].vertical, crosswordGrid);
             }
 
         }
@@ -245,6 +244,20 @@ function App() {
       generateCrossword(seed);
     }
 
+    return crosswordGrid;
+
+  }
+
+  function renderCrossword() {
+    var rowStr = "";
+    var grid = operateCrossword();
+    for (var x = 0; x < grid.length; x++) {
+      for (var y = 0; y < grid.length; y++) {
+        rowStr += "<td>" + grid[x][y].targetChar + "</td>";
+      }
+    }
+    console.log('across ' + acrossCount);
+    console.log('down ' + downCount);
   }
 
   return (
@@ -267,7 +280,7 @@ function App() {
     </ul>
 
     <div id="generate">
-    <button type="submit" onClick={generateCrossword(newWord)}>Generate Crossword</button>
+    <button type="submit" onClick={renderCrossword}>Generate Crossword</button>
     </div>
     <div className="container">
       <div id="crossword">
